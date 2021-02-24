@@ -27,6 +27,14 @@ def lcs_dp(strA, strB):
     dp_table = [[0 for j in range(cols)] for i in range(rows)]
 
     # TODO: Fill in the table using a nested for loop.
+    for char1 in range(rows):
+        for char2 in range(cols):
+            if char1 == 0 or char2 == 0:
+                dp_table[char1][char2] = 0
+            elif strA[char1 - 1] == strB[char2 - 1]:
+                dp_table[char1][char2] = dp_table[char1 - 1][char2 - 1]+1
+            else:
+                dp_table[char1][char2] = max(dp_table[char1 - 1][char2], dp_table[char1][char2 - 1])
 
     return dp_table[rows-1][cols-1]
 
