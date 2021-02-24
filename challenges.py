@@ -26,22 +26,32 @@ def lcs_dp(strA, strB):
 
     dp_table = [[0 for j in range(cols)] for i in range(rows)]
 
-    # TODO: Fill in the table using a nested for loop.
-    for char1 in range(rows):
-        for char2 in range(cols):
-            if char1 == 0 or char2 == 0:
-                dp_table[char1][char2] = 0
-            elif strA[char1 - 1] == strB[char2 - 1]:
-                dp_table[char1][char2] = dp_table[char1 - 1][char2 - 1]+1
+    for i in range(rows):
+        for j in range(cols):
+            if i == 0 or j == 0:
+                dp_table[i][j] = 0
+            elif strA[i - 1] == strB[j - 1]:
+                dp_table[i][j] = dp_table[i - 1][j - 1]+1
             else:
-                dp_table[char1][char2] = max(dp_table[char1 - 1][char2], dp_table[char1][char2 - 1])
+                dp_table[i][j] = max(dp_table[i - 1][j], dp_table[i][j - 1])
 
     return dp_table[rows-1][cols-1]
 
 def knapsack(items, capacity):
     """Return the maximum value that can be stored in the knapsack using the
     items given."""
-    pass
+    if items == 0 or capacity == 0:
+        return 0
+
+    weight, value = items[0]
+
+    value_without = knapsack(items[1:], capacity)
+    value_with = value + knapsack(items[1:], capacity - weight)
+
+    if weight > capacity:
+        return value_without
+    
+    return max(value_with, value_without)
 
 def knapsack_dp(items, capacity):
     """Return the maximum value that can be stored in the knapsack using the
@@ -51,6 +61,18 @@ def knapsack_dp(items, capacity):
     dp_table = [[0 for j in range(cols)] for i in range(rows)]
 
     # TODO: Fill in the table using a nested for loop.
+    for i in range(rows):
+        for j in range(cols):
+            if i == 0 or j == 0:
+                dp_table[i][j] = 0
+            elif items[i - 1][1] > j:
+                dp_table[i][j] = dp_table[i - 1][j]
+            else:
+                value_with = items[i - 1][2] + dp_table[i - 1][j - items[i - 1][1]]
+                value_without = dp_table[i - 1][j]
+                dp_table[i][j] = max(value_with, value_without)
+                
+    return dp_table[rows - 1][cols - 1]
 
     return dp_table[rows-1][cols-1]
     
