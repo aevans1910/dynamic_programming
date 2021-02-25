@@ -80,7 +80,23 @@ def knapsack_dp(items, capacity):
     
 def edit_distance(str1, str2):
     """Compute the Edit Distance between 2 strings."""
-    pass
+    if len(str1) == 0:
+        return len(str2)
+
+    if len(str2) == 0:
+        return len(str1)
+
+    str1_last_index = len(str1) - 1
+    str2_last_index = len(str2) - 1
+
+    if str1[str1_last_index] == str2[str2_last_index]:
+        return edit_distance(str1[:str1_last_index], str2[:str2_last_index])
+
+    return 1 + min(
+        edit_distance(str1, str2[:str2_last_index]),
+        edit_distance(str1[:str1_last_index], str2),
+        edit_distance(str1[:str1_last_index], str2[:str2_last_index])
+    )
 
 def edit_distance_dp(str1, str2):
     """Compute the Edit Distance between 2 strings."""
@@ -89,5 +105,19 @@ def edit_distance_dp(str1, str2):
     dp_table = [[0 for j in range(cols)] for i in range(rows)]
 
     # TODO: Fill in the table using a nested for loop.
+    for i in range(rows):
+        for j in range(cols):
+            if i == 0:
+                dp_table[i][j] = j
+            elif j == 0:
+                dp_table[i][j] = i
+            elif str1[i - 1] == str2[j - 1]:
+                dp_table[i][j] = dp_table[i - 1][j - 1]
+            else: 
+                dp_table[i][j] = 1 + min(
+                    dp_table[i][j - 1],
+                    dp_table[i - 1][j],
+                    dp_table[i - 1][j - 1]
+                )
 
     return dp_table[rows-1][cols-1]
